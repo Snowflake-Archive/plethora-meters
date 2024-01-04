@@ -10,7 +10,7 @@ return function(canvas, config)
 
   -- "tick" runs once a second
   module.tick = function()
-    local t = os.date("*t", (os.epoch("utc") - tonumber(config.tzoffset or 0) * 60 * 60 * 1000) / 1000)
+    local t = os.date("*t", (os.epoch("utc") + tonumber(config.tzoffset or 0) * 60 * 60 * 1000) / 1000)
     clock.setText(("%s:%s:%s"):format(n(t.hour), n(t.min), n(t.sec)))
   end
 

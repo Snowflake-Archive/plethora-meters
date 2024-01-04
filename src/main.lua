@@ -13,7 +13,7 @@ local colors = {
   0xffffff77
 }
 
-local f = fs.open(path .. "/config.lua", "r")
+local f = fs.open(PATH .. "/config.lua", "r")
 local config = textutils.unserialise(f.readAll())
 f.close()
 
