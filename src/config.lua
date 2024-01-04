@@ -27,8 +27,26 @@
     {
       name = "claim",
       x = 4,
-      y = "after:date",
+      -- simple arithmetic can be used to offset the meter (adding or subtracting)
+      -- this must be with no spaces and no positive integers only
+      y = "after:date+1",
       textSize = 0.5
+    },
+    {
+      name = "homeassistant",
+      id = "temp",
+      -- homeassistant is a special meter that can be used to display data from Home Assistant
+      hass = {
+        -- the URL of your Home Assistant instance
+        url = "http://homeassistant.local:8123",
+        -- a long-lived access token
+        authorization = "abcdef",
+        -- the entity ID of the sensor you want to display
+        entity = "sensor.bedroom_temperature",
+      },
+      x = 4,
+      y = "after:claim+1",
+      textSize = 0.4
     },
     {
       -- For meters of which you have multiple, you can specify an ID. This is used to identify the meter in the code.
@@ -36,7 +54,7 @@
       name = "krist",
       kristName = "kznepbmewt",
       x = 4,
-      y = "after:claim",
+      y = "after:temp+1",
       textSize = 0.4
     },
     {

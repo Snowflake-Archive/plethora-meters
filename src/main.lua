@@ -30,19 +30,37 @@ for i, v in pairs(config.meters) do
   print("Loading meter", data.name, "(" .. data.id .. ")")
 
   local ok, err = pcall(function()
-    local after = type(v.y) == "string" and v.y:match("^after:([%a%d_%-]+)$") or nil
+    if type(v.y) == "string" then
+      local after = v.y:match("after:([%a%d_%-]+)")
+      local operation, value = v.y:match("([%+%-])(%d+)$")
 
-    if after then
-      for i, v in pairs(meters) do
-        if v.id == after then
-          data.y = v.y + v.meter.h
+      local yValue = v.y
+
+      if after then
+        local found = false
+
+        for i, v in pairs(meters) do
+          if v.id == after then
+            yValue = v.y + v.meter.h
+            found = true
+          end
+        end
+
+        if found == false then
+          error("could not find meter id " .. after .. ". ensure it is loaded prior to loading this meter")
+          return
         end
       end
 
-      if type(data.y) == "string" then
-        error("could not find meter id " .. after .. ". ensure it is loaded prior to loading this meter")
-        return
+      if operation and value then
+        if operation == "+" then
+          yValue = yValue + value
+        elseif operation == "-" then
+          yValue = yValue - value
+        end
       end
+
+      v.y = yValue
     end
 
     local meterRequire = require("meters." .. v.name)
@@ -61,6 +79,8 @@ for i, v in pairs(config.meters) do
   if not ok then
     canvas.addText( { x = v.x, y = (type(v.y) == "number" and v.y or 0) }, "failed to load meter " .. v.name .. " (id: " .. v.id .. ")", 0xCC4C4CFF, 0.4 )
     canvas.addText( { x = v.x, y = (type(v.y) == "number" and v.y or 0) + 4 }, err, 0xCC4C4CFF, 0.4 )
+    printError("failed to load meter " .. v.name .. " (id: " .. v.id .. ")")
+    printError(err)
   else
     meters[#meters + 1] = data
   end
